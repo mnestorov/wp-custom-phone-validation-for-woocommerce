@@ -3,7 +3,7 @@
  * Plugin Name: MN - Custom Phone Validation for WooCommerce
  * Plugin URI: https://github.com/mnestorov/wp-custom-phone-validation-for-woocommerce
  * Description: Adds custom phone number validation for Germany, Austria, and Luxembourg in WooCommerce checkout.
- * Version: 1.0
+ * Version: 1.1
  * Author: Martin Nestorov
  * Author URI: https://github.com/mnestorov
  * WC requires at least: 3.0.0
@@ -22,7 +22,7 @@ class MN_Custom_Phone_Validation {
         add_action('woocommerce_after_checkout_form', array($this, 'initialize_phone_validation'));
     }
 
-    public function enqueue_scripts() {
+    public function enqueue_scripts_styles() {
         // Enqueue intl-tel-input library from CDN
         wp_enqueue_script('intl-tel-input', 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/intlTelInput.min.js', array('jquery'), '17.0.8', true);
         wp_enqueue_style('intl-tel-input-css', 'https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/css/intlTelInput.css', array(), '17.0.8');
@@ -43,22 +43,23 @@ class MN_Custom_Phone_Validation {
 
         <script type="text/javascript">
             jQuery(document).ready(function($) {
-                var phoneInput = $("#billing_phone");
+                if ($('#billing_phone').length > 0) {
+                    const input = document.querySelector("#billing_phone");
 
-                // Initialize intl-tel-input
-                var iti = phoneInput.intlTelInput({
-                    initialCountry: "auto",
-                    geoIpLookup: function(callback) {
-                        jQuery.get('https://ipinfo.io', function() {}, "jsonp").always(function(resp) {
-                            var countryCode = (resp && resp.country) ? resp.country : "";
-                            callback(countryCode);
-                        });
-                    },
-                    onlyCountries: ['de', 'at', 'lu'],      // Germany, Austria, Luxembourg
-                    preferredCountries: ['de', 'at', 'lu'],
-                    separateDialCode: true,
-                    utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js"  // CDN path to intl-tel-input's utils script
-                });
+                    window.intlTelInput(input, {
+                        initialCountry: "auto",
+                        geoIpLookup: function(callback) {
+                            fetch('https://ipapi.co/json')
+                                .then(response => response.json())
+                                .then(data => callback(data.country_code))
+                                .catch(() => callback("us"));
+                        },
+                        onlyCountries: ['de', 'at', 'lu'], // Germany, Austria, Luxembourg
+                        preferredCountries: ['de', 'at', 'lu'],
+                        separateDialCode: true,
+                        utilsScript: "https://cdnjs.cloudflare.com/ajax/libs/intl-tel-input/17.0.8/js/utils.js" // CDN path to intl-tel-input's utils script
+                    });
+                }
 
                 // Function to check valid phone number
                 function isValidPhoneNumber(phoneNumber, country) {
