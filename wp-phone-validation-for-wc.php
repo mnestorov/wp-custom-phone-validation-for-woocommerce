@@ -1,13 +1,13 @@
 <?php
 /**
- * Plugin Name: MN - Custom Phone Validation for WooCommerce
- * Plugin URI: https://github.com/mnestorov/wp-custom-phone-validation-for-woocommerce
- * Description: Adds custom phone number validation for Germany, Austria, and Luxembourg in WooCommerce checkout.
- * Version: 1.1
- * Author: Martin Nestorov
- * Author URI: https://github.com/mnestorov
+ * Plugin Name:          MN - Custom Phone Validation for WooCommerce
+ * Plugin URI:           https://github.com/mnestorov/wp-custom-phone-validation-for-wc
+ * Description:          Adds custom phone number validation for Germany, Austria, and Luxembourg in WooCommerce checkout.
+ * Version:              1.1
+ * Author:               Martin Nestorov
+ * Author URI:           https://github.com/mnestorov
  * WC requires at least: 3.0.0
- * WC tested up to: 5.1.0
+ * WC tested up to:      5.1.0
  */
 
 // Exit if accessed directly
